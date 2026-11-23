@@ -5,36 +5,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>下落节奏游戏</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #000;
+      overflow: hidden;
+    }
     #startBtn {
-      padding: 12px 30px;
-      font-size: 18px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 14px 36px;
+      font-size: 20px;
       border-radius: 999px;
       background: linear-gradient(90deg, #40bfff, #f888dd);
       border: none;
       color: white;
       cursor: pointer;
+      z-index: 10;
     }
-    #startBtn:hover {
-      opacity: 0.9;
+    #gameArea {
+      width: 360px;
+      height: 600px;
+      border: 1px solid #333;
+      margin: 20px auto;
+      display: none;
+      position: relative;
     }
-    body {
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 95vh;
-      margin: 0;
+    .block {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background: #40bfff;
     }
   </style>
 </head>
 <body>
   <button id="startBtn">LIVE START</button>
+  <div id="gameArea"></div>
+
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const btn = document.getElementById('startBtn');
-      btn.addEventListener('click', () => {
-        alert('✅ 按钮触发成功！可以在这里启动节奏游戏');
-      });
+    const btn = document.getElementById('startBtn');
+    const gameArea = document.getElementById('gameArea');
+
+    btn.addEventListener('click', () => {
+      btn.style.display = 'none';
+      gameArea.style.display = 'block';
+
+      // 生成下落方块
+      function spawnBlock() {
+        const block = document.createElement('div');
+        block.classList.add('block');
+        block.style.left = Math.random() * 280 + 'px';
+        block.style.top = '0px';
+        gameArea.appendChild(block);
+
+        function fall() {
+          let top = parseFloat(block.style.top || 0);
+          top += 3;
+          block.style.top = top + 'px';
+          if (top > 600) {
+            block.remove();
+          } else {
+            requestAnimationFrame(fall);
+          }
+        }
+        fall();
+      }
+      setInterval(spawnBlock, 1200);
     });
   </script>
 </body>
